@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lecture 01 — Intro to Programming · Focused Quiz</title>
+<style>
+  /* Memory-friendly palette: warm cream + sage + muted teal.
+     Avoids glaring white, pure black, and bright red — easier on
+     the eyes during long study sessions and reduces test-anxiety
+     coloring on wrong answers. */
+  :root {
+    --bg:        #F5EFE0;
+    --bg-soft:   #EDE4D0;
+    --card:      #FBF7EC;
+    --ink:       #2E3A3A;
+    --muted:     #6B7775;
+    --accent:    #5B8A8A;
+    --accent-d:  #406A6A;
+    --good:      #7BA77B;
+    --good-bg:   #DFEBDC;
+    --bad:       #B8746B;
+    --bad-bg:    #EFD9D3;
+    --hi:        #E8C97A;
+    --line:      #d8cfba;
+    --shadow:    0 2px 0 rgba(46,58,58,0.08), 0 6px 18px rgba(46,58,58,0.06);
+    --radius:    14px;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                 "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.55;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 24px 14px 60px;
+  }
+  .wrap { width: 100%; max-width: 760px; }
+
+  header { text-align: center; margin-bottom: 18px; }
+  header h1 {
+    font-size: 1.45rem; margin: 0 0 4px;
+    color: var(--accent-d); letter-spacing: 0.3px;
+  }
+  header p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+
+  .bar {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    justify-content: space-between; align-items: center;
+    background: var(--bg-soft); padding: 9px 13px;
+    border-radius: var(--radius); font-size: 0.88rem;
+    color: var(--muted); margin-bottom: 12px;
+  }
+  .bar strong { color: var(--ink); font-weight: 600; }
+  .bar .pill {
+    background: var(--card); padding: 3px 10px;
+    border-radius: 999px; border: 1px solid var(--line);
+  }
+
+  .progress-track {
+    width: 100%; height: 6px; background: var(--bg-soft);
+    border-radius: 999px; overflow: hidden; margin-bottom: 16px;
+  }
+  .progress-fill {
+    height: 100%; background: var(--accent);
+    width: 0%; transition: width .3s ease;
+  }
+
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 24px 22px 20px; box-shadow: var(--shadow);
+  }
+
+  .qnum {
+    font-size: 0.75rem; letter-spacing: 1.2px;
+    color: var(--accent); text-transform: uppercase;
+    margin-bottom: 6px; font-weight: 600;
+  }
+  .qtype-tag {
+    display: inline-block; margin-left: 8px;
+    padding: 2px 8px; border-radius: 999px;
+    background: var(--hi); color: #6b4f1a;
+    font-size: 0.68rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .qtext {
+    font-size: 1.08rem; margin: 4px 0 16px; color: var(--ink);
+  }
+  .qtext code, .feedback code, .review-item code {
+    background: var(--hi); padding: 1px 6px; border-radius: 4px;
+    font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 0.92em;
+  }
+
+  /* ---- MC options ---- */
+  .options { display: grid; gap: 9px; }
+  .opt {
+    text-align: left; background: #FFFDF6;
+    border: 1.5px solid var(--line); color: var(--ink);
+    padding: 11px 13px; border-radius: 10px;
+    font-size: 0.96rem; cursor: pointer;
+    transition: all .15s ease; font-family: inherit;
+    line-height: 1.45; width: 100%;
+  }
+  .opt:hover:not(:disabled) {
+    border-color: var(--accent); background: #FFFEFA;
+    transform: translateY(-1px);
+  }
+  .opt:disabled { cursor: default; }
+  .opt.correct, .opt.reveal {
+    background: var(--good-bg); border-color: var(--good); color: #2f4a2f;
+  }
+  .opt.wrong {
+    background: var(--bad-bg); border-color: var(--bad); color: #5a2c26;
+  }
+  .opt .marker {
+    display: inline-block; width: 22px; height: 22px; line-height: 22px;
+    border-radius: 50%; background: var(--bg-soft); color: var(--muted);
+    text-align: center; font-size: 0.78rem; margin-right: 10px; font-weight: 700;
+  }
+  .opt.correct .marker, .opt.reveal .marker { background: var(--good); color: white; }
+  .opt.wrong .marker { background: var(--bad); color: white; }
+
+  /* ---- Drag-drop common ---- */
+  .dd-hint {
+    font-size: 0.85rem; color: var(--accent-d);
+    margin-bottom: 14px; padding: 8px 12px;
+    background: rgba(91, 138, 138, 0.08);
+    border-radius: 8px; border-left: 3px solid var(--accent);
+  }
+
+  .dd-card {
+    background: var(--card);
+    border: 1.5px solid var(--accent);
+    color: var(--accent-d);
+    padding: 7px 12px; border-radius: 8px;
+    font-size: 0.9rem; cursor: pointer;
+    font-weight: 500; user-select: none;
+    transition: all 0.15s ease; font-family: inherit;
+    line-height: 1.4; text-align: left;
+  }
+  .dd-card:hover:not(:disabled) { background: #fff; }
+  .dd-card.selected {
+    background: var(--accent); color: white;
+    transform: scale(1.04);
+    box-shadow: 0 0 0 3px rgba(91, 138, 138, 0.25);
+  }
+  .dd-card.correct {
+    background: var(--good-bg); border-color: var(--good);
+    color: #2f4a2f; cursor: default;
+  }
+  .dd-card.wrong {
+    background: var(--bad-bg); border-color: var(--bad);
+    color: #5a2c26; cursor: default;
+  }
+  .dd-card[disabled] { cursor: default; }
+
+  .slot-target {
+    border: 2px dashed var(--line); border-radius: 8px;
+    background: var(--bg-soft); padding: 5px;
+    min-height: 44px; display: flex; align-items: center;
+    justify-content: center; cursor: pointer;
+    transition: border-color .15s ease;
+  }
+  .slot-target:hover { border-color: var(--accent); }
+  .slot-target.has-card { border-style: solid; background: #fbf3df; padding: 4px; }
+  .slot-target.correct {
+    border-color: var(--good); background: var(--good-bg);
+    border-style: solid;
+  }
+  .slot-target.wrong {
+    border-color: var(--bad); background: var(--bad-bg);
+    border-style: solid;
+  }
+  .slot-target .placeholder {
+    color: var(--muted); font-size: 0.82rem;
+  }
+  .slot-target .dd-card { width: 100%; }
+
+  /* ---- Match layout ---- */
+  .match-list { display: flex; flex-direction: column; gap: 8px; }
+  .match-row {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .match-label {
+    flex: 1; font-size: 0.9rem; color: var(--ink);
+  }
+  .match-label code {
+    font-size: 0.88em;
+  }
+  .match-row .slot-target { width: 170px; flex: none; }
+  .slot-hint {
+    font-size: 0.75rem; color: var(--good);
+    margin-top: 3px; font-style: italic;
+  }
+  @media (max-width: 520px) {
+    .match-row { flex-direction: column; align-items: stretch; gap: 4px; }
+    .match-row .slot-target { width: 100%; }
+  }
+
+  /* ---- Order layout ---- */
+  .order-list { display: flex; flex-direction: column; gap: 8px; }
+  .order-row {
+    display: flex; align-items: stretch; gap: 10px;
+  }
+  .order-num {
+    width: 34px; min-height: 44px;
+    border-radius: 8px; background: var(--accent);
+    color: white; display: flex; align-items: center;
+    justify-content: center; font-weight: 700; flex-shrink: 0;
+    font-size: 1rem;
+  }
+  .order-row .slot-target { flex: 1; }
+
+  /* ---- Categorize layout ---- */
+  .cat-zones {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 10px; margin-bottom: 12px;
+  }
+  .cat-zone {
+    border: 2px dashed var(--line); border-radius: 12px;
+    padding: 12px; min-height: 130px;
+    background: var(--bg-soft); cursor: pointer;
+    transition: border-color .15s ease;
+  }
+  .cat-zone:hover { border-color: var(--accent); }
+  .cat-zone-label {
+    font-weight: 600; font-size: 0.88rem;
+    color: var(--accent-d); margin-bottom: 8px;
+    text-align: center;
+  }
+  .cat-zone-cards {
+    display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;
+  }
+  @media (max-width: 480px) {
+    .cat-zones { grid-template-columns: 1fr; }
+  }
+
+  /* ---- Card bank ---- */
+  .card-bank {
+    margin-top: 14px; padding: 11px 12px;
+    background: var(--bg-soft); border-radius: 10px;
+    border: 1px solid var(--line);
+  }
+  .card-bank-label {
+    font-size: 0.7rem; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 8px; font-weight: 600;
+  }
+  .card-bank-cards {
+    display: flex; flex-wrap: wrap; gap: 6px; min-height: 30px;
+  }
+  .card-bank-cards .empty-hint {
+    color: var(--good); font-size: 0.85rem; font-style: italic;
+  }
+
+  /* ---- Feedback & actions ---- */
+  .feedback {
+    margin-top: 14px; padding: 11px 13px;
+    border-radius: 10px; font-size: 0.92rem;
+    display: none; line-height: 1.5;
+  }
+  .feedback.good { background: var(--good-bg); color: #2f4a2f; display: block; }
+  .feedback.bad  { background: var(--bad-bg); color: #5a2c26; display: block; }
+  .feedback b { font-weight: 700; }
+
+  .actions {
+    display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap;
+  }
+  button.btn {
+    background: var(--accent); color: #FBF7EC;
+    border: none; padding: 11px 22px; border-radius: 10px;
+    font-size: 0.96rem; font-weight: 600; cursor: pointer;
+    font-family: inherit;
+    transition: background .15s ease, transform .1s ease;
+  }
+  button.btn:hover { background: var(--accent-d); }
+  button.btn:active { transform: translateY(1px); }
+  button.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  button.btn.ghost {
+    background: transparent; color: var(--accent-d);
+    border: 1.5px solid var(--accent);
+  }
+  button.btn.ghost:hover { background: var(--bg-soft); }
+
+  /* ---- Result ---- */
+  .result { text-align: center; padding: 12px 6px 6px; }
+  .result h2 {
+    margin: 0 0 6px; color: var(--accent-d); font-size: 1.5rem;
+  }
+  .score-big {
+    font-size: 2.6rem; font-weight: 700;
+    color: var(--ink); margin: 12px 0 4px;
+  }
+  .score-pct { color: var(--muted); font-size: 1rem; }
+  .badge {
+    display: inline-block; margin: 12px auto 4px;
+    padding: 6px 14px; border-radius: 999px;
+    font-size: 0.88rem; font-weight: 600;
+  }
+  .badge.gold   { background: #F5E4B7; color: #6B4F1A; }
+  .badge.silver { background: #E5E2D9; color: #4A4A4A; }
+  .badge.bronze { background: #EBD7C4; color: #6B3F1A; }
+  .badge.try    { background: var(--bg-soft); color: var(--muted); }
+
+  .review-list {
+    text-align: left; margin: 16px 0 6px;
+    max-height: 260px; overflow-y: auto;
+    border-top: 1px dashed var(--line); padding-top: 12px;
+  }
+  .review-list h3 {
+    margin: 0 0 10px; font-size: 0.9rem;
+    color: var(--muted); text-transform: uppercase; letter-spacing: 1px;
+  }
+  .review-item {
+    background: var(--bg-soft); border-left: 3px solid var(--bad);
+    padding: 9px 11px; border-radius: 8px;
+    margin-bottom: 7px; font-size: 0.88rem;
+  }
+  .review-item .qq { font-weight: 600; margin-bottom: 3px; }
+  .review-item .info { color: var(--muted); font-size: 0.82rem; }
+
+  footer {
+    text-align: center; color: var(--muted);
+    font-size: 0.78rem; margin-top: 20px;
+  }
+
+  @media (max-width: 480px) {
+    .qtext { font-size: 1rem; }
+    header h1 { font-size: 1.25rem; }
+    .score-big { font-size: 2.2rem; }
+    .card { padding: 20px 16px 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Lecture 01 — Intro to Programming</h1>
+    <p>12 focused questions · mixed types · replay to lock in 🌿</p>
+  </header>
+
+  <div class="bar">
+    <span>Round <strong id="round">1</strong></span>
+    <span class="pill">Q <strong id="qIdx">1</strong> / <strong id="qTotal">12</strong></span>
+    <span>Score <strong id="score">0</strong></span>
+    <span>Best <strong id="best">—</strong></span>
+  </div>
+
+  <div class="progress-track"><div class="progress-fill" id="progress"></div></div>
+
+  <div class="card" id="card"></div>
+
+  <footer>Information Systems Programming · Lecture 01</footer>
+</div>
+
+<script>
+/* =========================================================
+   QUESTION BANK — 12 focused, exam-likely questions only.
+   Types: 'mc' (single answer), 'match' (one-to-one),
+          'order' (sequence), 'categorize' (multi → group).
+   ========================================================= */
+const BANK = [
+
+  // 1. Definition of a computer program
+  {
+    type: 'mc',
+    q: 'How is a <b>computer program</b> defined?',
+    choices: [
+      'A binary file produced by a compiler',
+      'A set of instructions that tells a computer how to perform task(s)',
+      'A graphical user interface for the operating system',
+      'A digital circuit built into a CPU'
+    ],
+    answer: 1,
+    note: 'A computer program = <b>a set of instructions</b> that tells a computer how to perform task(s).'
+  },
+
+  // 2. Why machine code (1s and 0s)
+  {
+    type: 'mc',
+    q: 'Computers can understand instructions only when they are written in…',
+    choices: [
+      'Plain English commands',
+      'Decimal numbers',
+      "1's and 0's (Machine Code)",
+      "A programmer's native language"
+    ],
+    answer: 2,
+    note: "Computers only work with electricity (on/off → binary). Instructions in 1's and 0's are called <b>Machine Code / Machine Language</b>. Each 1 or 0 is a <b>bit</b>."
+  },
+
+  // 3. MATCH — Characteristics of a Good Program
+  {
+    type: 'match',
+    q: 'Match each <b>characteristic of a good program</b> to its definition.',
+    pairs: [
+      { card: 'Efficiency',      slot: 'Takes the least amount of memory and processing time' },
+      { card: 'Reliability',     slot: 'Gives the same performance in all conditions' },
+      { card: 'Portability',     slot: 'Should run on different computers / platforms' },
+      { card: 'Flexibility',     slot: 'Add new features without changing the existing main structure' },
+      { card: 'Maintainability', slot: 'Fixing errors and meeting new requirements' },
+      { card: 'Scalability',     slot: 'Can be applied with larger groups of users' }
+    ],
+    note: 'These are 6 of the 8 characteristics. The other two: <b>Cost Effectiveness</b> (life span vs. cost) and <b>Machine Independency</b> (runs on many computer types without modification).'
+  },
+
+  // 4. ORDER — Programming Development Cycle
+  {
+    type: 'order',
+    q: 'Put the steps of the <b>Programming Development Cycle</b> in the correct order.',
+    items: [
+      'Analyze — figure out the problem, then decide how to resolve',
+      'Design — break down the problem',
+      'Code — write the set of instructions',
+      'Debug / Test — find the bugs / errors',
+      'Implement — make the program work correctly',
+      'Maintain — documentation and meet (new) demands'
+    ],
+    note: 'Memorize: <b>Analyze → Design → Code → Debug/Test → Implement → Maintain</b>.'
+  },
+
+  // 5. Programming = Coding = Scripting
+  {
+    type: 'mc',
+    q: 'According to the slide:  Programming  ≈  ______  ≈  Scripting',
+    choices: ['Compiling', 'Designing', 'Coding', 'Debugging'],
+    answer: 2,
+    note: '<b>Programming ≈ Coding ≈ Scripting</b>. The slide treats them as roughly interchangeable.'
+  },
+
+  // 6. Programming language definition
+  {
+    type: 'mc',
+    q: 'How is a <b>programming language</b> defined?',
+    choices: [
+      'A binary translation of English',
+      'A vocabulary and set of grammatical rules for the set of instructions',
+      'Another name for machine code',
+      'A piece of software that runs on the CPU'
+    ],
+    answer: 1,
+    note: 'A programming language = <b>a vocabulary and a set of grammatical rules</b> for writing the instructions.'
+  },
+
+  // 7. Programmer
+  {
+    type: 'mc',
+    q: 'A <b>programmer</b> is best described as…',
+    choices: [
+      'Anyone who uses a computer',
+      'Someone who manufactures CPU chips',
+      'A person who writes the set of instructions',
+      'Someone who only fixes hardware'
+    ],
+    answer: 2,
+    note: 'A programmer = <b>a person who writes the set of instructions</b>. Tasks include writing, updating, optimizing, testing, debugging, securing, and porting programs.'
+  },
+
+  // 8. Compiler/Interpreter role
+  {
+    type: 'mc',
+    q: 'What is the main role of a <b>compiler or interpreter</b>?',
+    choices: [
+      'To check the spelling and grammar of source code',
+      'To convert high-level source code into machine code',
+      "To draw the program's user interface",
+      'To connect the program to the internet'
+    ],
+    answer: 1,
+    note: 'They translate human-readable code into <b>machine code</b> the CPU can run — like a human language interpreter (e.g. English → Japanese).'
+  },
+
+  // 9. Compiler vs Interpreter behavior
+  {
+    type: 'mc',
+    q: 'Which statement best captures the <b>compiler vs. interpreter</b> difference?',
+    choices: [
+      'Compilers are always slower than interpreters',
+      'A compiler reads the entire program at once, then passes it to the machine; an interpreter reads one line at a time and passes each to the machine',
+      'Compilers run only on Windows; interpreters run anywhere',
+      'Interpreters automatically fix bugs in your code'
+    ],
+    answer: 1,
+    note: '<b>Compiler:</b> read all → pass to machine in one go.<br><b>Interpreter:</b> read one line → pass → read next → pass.'
+  },
+
+  // 10. CATEGORIZE — Compiler vs Interpreter languages
+  {
+    type: 'categorize',
+    q: 'Sort each language into the correct category (per the slide).',
+    categories: ['Uses a Compiler', 'Uses an Interpreter'],
+    items: [
+      { text: 'Java',         category: 'Uses a Compiler' },
+      { text: 'C++',          category: 'Uses a Compiler' },
+      { text: 'C#',           category: 'Uses a Compiler' },
+      { text: 'Visual Basic', category: 'Uses a Compiler' },
+      { text: 'Python',       category: 'Uses an Interpreter' },
+      { text: 'JavaScript',   category: 'Uses an Interpreter' }
+    ],
+    note: 'On the slide: <b>Compiled</b> → Java, C++, C#, Visual Basic.  <b>Interpreted</b> → Python, JavaScript.'
+  },
+
+  // 11. MATCH — Print syntax
+  {
+    type: 'match',
+    q: 'Match each language to its syntax for printing <code>"APU"</code>.',
+    pairs: [
+      { card: 'Python',       slot: 'print("APU")' },
+      { card: 'JavaScript',   slot: 'console.log("APU")' },
+      { card: 'Java',         slot: 'System.out.println("APU");' },
+      { card: 'C#',           slot: 'Console.Write("APU");' },
+      { card: 'Visual Basic', slot: 'Console.WriteLine("APU")' },
+      { card: 'C++',          slot: 'Console::Write("APU");' }
+    ],
+    note: 'Patterns to remember: Python and JavaScript skip semicolons; the others use them. C++ uses <code>::</code> (scope resolution). C# and VB share <code>Console.</code> but differ in <code>Write</code> vs <code>WriteLine</code>.',
+    slotIsCode: true
+  },
+
+  // 12. Cycle step recognition (different angle from Q4)
+  {
+    type: 'mc',
+    q: 'Which step of the development cycle is described as <i>"Find the bugs / errors"</i>?',
+    choices: ['Analyze', 'Code', 'Debug / Test', 'Maintain'],
+    answer: 2,
+    note: '<b>Debug / Test</b> = find bugs / errors. (Don\'t confuse with <b>Maintain</b>, which is documentation + meeting new demands later in the lifecycle.)'
+  }
+];
+
+/* =========================================================
+   Engine
+   ========================================================= */
+const elCard   = document.getElementById('card');
+const elQIdx   = document.getElementById('qIdx');
+const elQTotal = document.getElementById('qTotal');
+const elScore  = document.getElementById('score');
+const elRound  = document.getElementById('round');
+const elBest   = document.getElementById('best');
+const elProg   = document.getElementById('progress');
+
+let order = [], pos = 0, score = 0, round = 1;
+let wrongLog = [];
+let answered = false;
+let dragState = { selected: null, placements: {} };
+let currentDD = null;
+
+elQTotal.textContent = BANK.length;
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function escapeHTML(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+
+const memStore = {};
+function lsGet(k) { try { return localStorage.getItem(k); } catch(e) { return memStore[k] || null; } }
+function lsSet(k, v) { try { localStorage.setItem(k, v); } catch(e) { memStore[k] = v; } }
+function lsDel(k)    { try { localStorage.removeItem(k); } catch(e) {} delete memStore[k]; }
+
+function startRound() {
+  order = shuffle(BANK.map((_, i) => i));
+  pos = 0; score = 0; wrongLog = [];
+  elScore.textContent = '0';
+  elRound.textContent = round;
+  const best = lsGet('lec01_v2_best');
+  elBest.textContent = best ? best : '—';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  if (pos >= order.length) return renderResult();
+  answered = false;
+  dragState = { selected: null, placements: {} };
+  currentDD = null;
+
+  const item = BANK[order[pos]];
+  elQIdx.textContent = pos + 1;
+  elProg.style.width = (pos / order.length * 100) + '%';
+
+  const tagMap = { mc:'Multiple choice', match:'Drag & match', order:'Drag & order', categorize:'Drag & sort' };
+  let html = `<div class="qnum">Question ${pos + 1} of ${order.length}<span class="qtype-tag">${tagMap[item.type]}</span></div>`;
+  html += `<p class="qtext">${item.q}</p>`;
+
+  if (item.type === 'mc') html += renderMC_HTML(item);
+  else                    html += renderDD_HTML(item);
+
+  html += `<div class="feedback" id="fb"></div>`;
+  html += `<div class="actions" id="acts" style="display:none;"></div>`;
+  elCard.innerHTML = html;
+
+  if (item.type === 'mc') attachMC(item);
+  else                    attachDD(item);
+}
+
+/* ---------- MC ---------- */
+function renderMC_HTML(item) {
+  const idxs = item.choices.map((_, i) => i);
+  item._shuf = shuffle(idxs);
+  let h = '<div class="options" id="opts">';
+  item._shuf.forEach((origIdx, i) => {
+    h += `<button class="opt" data-i="${i}">
+      <span class="marker">${String.fromCharCode(65 + i)}</span>${item.choices[origIdx]}
+    </button>`;
+  });
+  h += '</div>';
+  return h;
+}
+
+function attachMC(item) {
+  document.querySelectorAll('.opt').forEach(btn => {
+    btn.onclick = () => {
+      if (answered) return;
+      answered = true;
+      const i = parseInt(btn.dataset.i);
+      const origIdx = item._shuf[i];
+      const isCorrect = origIdx === item.answer;
+
+      document.querySelectorAll('.opt').forEach(b => b.disabled = true);
+
+      if (isCorrect) {
+        btn.classList.add('correct');
+        score++;
+      } else {
+        btn.classList.add('wrong');
+        const correctI = item._shuf.indexOf(item.answer);
+        document.querySelectorAll('.opt')[correctI].classList.add('reveal');
+        wrongLog.push({
+          q: item.q.replace(/<[^>]+>/g, ''),
+          info: '✓ ' + item.choices[item.answer].replace(/<[^>]+>/g, '')
+        });
+      }
+      elScore.textContent = score;
+
+      const fb = document.getElementById('fb');
+      fb.className = 'feedback ' + (isCorrect ? 'good' : 'bad');
+      fb.innerHTML = `<b>${isCorrect ? 'Correct! 🌸' : 'Not quite.'}</b> ${item.note}`;
+
+      showNextButton();
+    };
+  });
+}
+
+/* ---------- Drag-Drop common ---------- */
+function setupDD(item) {
+  let cards, slots, slotOrder;
+  if (item.type === 'match') {
+    cards = item.pairs.map((p, i) => ({ id: 'c' + i, text: p.card, correctSlot: 's' + i }));
+    slots = item.pairs.map((p, i) => ({ id: 's' + i, label: p.slot, multi: false }));
+    slotOrder = shuffle(slots.map(s => s.id));
+  } else if (item.type === 'order') {
+    cards = item.items.map((t, i) => ({ id: 'c' + i, text: t, correctSlot: 's' + i }));
+    slots = item.items.map((_, i) => ({ id: 's' + i, label: String(i + 1), multi: false }));
+    slotOrder = slots.map(s => s.id);
+  } else if (item.type === 'categorize') {
+    cards = item.items.map((it, i) => ({
+      id: 'c' + i, text: it.text,
+      correctSlot: 's' + item.categories.indexOf(it.category)
+    }));
+    slots = item.categories.map((cat, i) => ({ id: 's' + i, label: cat, multi: true }));
+    slotOrder = slots.map(s => s.id);
+  }
+  const cardOrder = shuffle(cards.map(c => c.id));
+  return { cards, slots, cardOrder, slotOrder, type: item.type, slotIsCode: !!item.slotIsCode };
+}
+
+function renderDD_HTML(item) {
+  currentDD = setupDD(item);
+  const hints = {
+    match:      '🌿 Tap a card, then tap the slot next to its matching item. Tap a placed card to send it back.',
+    order:      '🌿 Tap a card, then tap the numbered slot for its position. Tap a placed card to send it back.',
+    categorize: '🌿 Tap a card, then tap the category zone it belongs to. Tap a placed card to send it back.'
+  };
+  return `<div class="dd-hint">${hints[item.type]}</div><div id="ddArea"></div>`;
+}
+
+function attachDD(item) {
+  renderDDArea(item);
+}
+
+function renderDDArea(item) {
+  const area = document.getElementById('ddArea');
+  let h = '';
+
+  if (currentDD.type === 'order')      h += renderOrderSlots();
+  else if (currentDD.type === 'match') h += renderMatchSlots();
+  else                                  h += renderCategorizeSlots();
+
+  // Card bank
+  const inBank = currentDD.cardOrder.filter(cid => !dragState.placements[cid]);
+  h += `<div class="card-bank">
+    <div class="card-bank-label">Cards (${inBank.length} left)</div>
+    <div class="card-bank-cards">`;
+  if (inBank.length === 0) {
+    h += `<div class="empty-hint">All placed — ready to check!</div>`;
+  } else {
+    inBank.forEach(cid => {
+      const c = currentDD.cards.find(x => x.id === cid);
+      const sel = dragState.selected === cid ? ' selected' : '';
+      h += `<button class="dd-card${sel}" data-card="${cid}">${escapeHTML(c.text)}</button>`;
+    });
+  }
+  h += `</div></div>`;
+  area.innerHTML = h;
+
+  // Wire up
+  area.querySelectorAll('.dd-card').forEach(el => {
+    el.onclick = (e) => { e.stopPropagation(); onCardClick(item, el.dataset.card); };
+  });
+  area.querySelectorAll('[data-slot]').forEach(el => {
+    el.onclick = () => onSlotClick(item, el.dataset.slot);
+  });
+
+  updateCheckButton(item);
+}
+
+function renderOrderSlots() {
+  let h = '<div class="order-list">';
+  currentDD.slotOrder.forEach(sid => {
+    const slot = currentDD.slots.find(s => s.id === sid);
+    h += `<div class="order-row">
+      <div class="order-num">${slot.label}</div>
+      ${slotHTML(sid)}
+    </div>`;
+  });
+  h += '</div>';
+  return h;
+}
+
+function renderMatchSlots() {
+  let h = '<div class="match-list">';
+  currentDD.slotOrder.forEach(sid => {
+    const slot = currentDD.slots.find(s => s.id === sid);
+    const labelHTML = currentDD.slotIsCode
+      ? `<code>${escapeHTML(slot.label)}</code>`
+      : escapeHTML(slot.label);
+    h += `<div class="match-row">
+      <div class="match-label">${labelHTML}</div>
+      ${slotHTML(sid)}
+    </div>`;
+  });
+  h += '</div>';
+  return h;
+}
+
+function renderCategorizeSlots() {
+  let h = '<div class="cat-zones">';
+  currentDD.slotOrder.forEach(sid => {
+    const slot = currentDD.slots.find(s => s.id === sid);
+    const cardsHere = Object.keys(dragState.placements).filter(cid => dragState.placements[cid] === sid);
+    h += `<div class="cat-zone" data-slot="${sid}">
+      <div class="cat-zone-label">${escapeHTML(slot.label)}</div>
+      <div class="cat-zone-cards">`;
+    if (cardsHere.length === 0) {
+      h += `<span class="placeholder">drop cards here</span>`;
+    } else {
+      cardsHere.forEach(cid => {
+        const c = currentDD.cards.find(x => x.id === cid);
+        h += `<button class="dd-card" data-card="${cid}">${escapeHTML(c.text)}</button>`;
+      });
+    }
+    h += `</div></div>`;
+  });
+  h += '</div>';
+  return h;
+}
+
+function slotHTML(sid) {
+  const cardsHere = Object.keys(dragState.placements).filter(cid => dragState.placements[cid] === sid);
+  if (cardsHere.length > 0) {
+    const cid = cardsHere[0];
+    const c = currentDD.cards.find(x => x.id === cid);
+    return `<div class="slot-target has-card" data-slot="${sid}">
+      <button class="dd-card" data-card="${cid}">${escapeHTML(c.text)}</button>
+    </div>`;
+  }
+  return `<div class="slot-target" data-slot="${sid}">
+    <span class="placeholder">tap to place</span>
+  </div>`;
+}
+
+function onCardClick(item, cardId) {
+  if (answered) return;
+  if (dragState.placements[cardId]) {
+    delete dragState.placements[cardId];
+    dragState.selected = null;
+  } else {
+    dragState.selected = (dragState.selected === cardId) ? null : cardId;
+  }
+  renderDDArea(item);
+}
+
+function onSlotClick(item, slotId) {
+  if (answered) return;
+  if (!dragState.selected) return;
+  const slot = currentDD.slots.find(s => s.id === slotId);
+  if (!slot.multi) {
+    Object.keys(dragState.placements).forEach(cid => {
+      if (dragState.placements[cid] === slotId) delete dragState.placements[cid];
+    });
+  }
+  dragState.placements[dragState.selected] = slotId;
+  dragState.selected = null;
+  renderDDArea(item);
+}
+
+function updateCheckButton(item) {
+  if (answered) return;
+  const acts = document.getElementById('acts');
+  const allPlaced = currentDD.cards.every(c => dragState.placements[c.id]);
+  if (allPlaced) {
+    acts.style.display = 'flex';
+    acts.innerHTML = `<button class="btn" id="checkBtn">Check answers ✓</button>`;
+    document.getElementById('checkBtn').onclick = () => checkDD(item);
+  } else {
+    acts.style.display = 'none';
+    acts.innerHTML = '';
+  }
+}
+
+function checkDD(item) {
+  answered = true;
+  const results = {};
+  let correctCount = 0;
+  currentDD.cards.forEach(c => {
+    const ok = dragState.placements[c.id] === c.correctSlot;
+    results[c.id] = ok;
+    if (ok) correctCount++;
+  });
+  const total = currentDD.cards.length;
+  const allCorrect = correctCount === total;
+
+  renderDDFeedback(results);
+
+  if (allCorrect) {
+    score++;
+    elScore.textContent = score;
+  } else {
+    wrongLog.push({
+      q: item.q.replace(/<[^>]+>/g, ''),
+      info: `${correctCount}/${total} placements correct`
+    });
+  }
+
+  const fb = document.getElementById('fb');
+  fb.className = 'feedback ' + (allCorrect ? 'good' : 'bad');
+  fb.innerHTML = allCorrect
+    ? `<b>All correct! 🌸</b> ${item.note}`
+    : `<b>${correctCount}/${total} correct.</b> Wrong placements are highlighted in coral. ${item.note}`;
+
+  showNextButton();
+}
+
+function renderDDFeedback(results) {
+  const area = document.getElementById('ddArea');
+  let h = '';
+
+  if (currentDD.type === 'order' || currentDD.type === 'match') {
+    h += currentDD.type === 'order' ? '<div class="order-list">' : '<div class="match-list">';
+    currentDD.slotOrder.forEach(sid => {
+      const slot = currentDD.slots.find(s => s.id === sid);
+      const cardId = Object.keys(dragState.placements).find(cid => dragState.placements[cid] === sid);
+      const correctCard = currentDD.cards.find(c => c.correctSlot === sid);
+
+      let inner, slotClass;
+      if (cardId) {
+        const c = currentDD.cards.find(x => x.id === cardId);
+        const ok = results[cardId];
+        inner = `<button class="dd-card ${ok ? 'correct' : 'wrong'}" disabled>${escapeHTML(c.text)}</button>`;
+        slotClass = ok ? 'correct' : 'wrong';
+      } else {
+        inner = `<span class="placeholder" style="color:var(--bad);">empty</span>`;
+        slotClass = 'wrong';
+      }
+
+      let hint = '';
+      if (slotClass === 'wrong' && correctCard) {
+        const t = correctCard.text.length > 70 ? correctCard.text.slice(0, 70) + '…' : correctCard.text;
+        hint = `<div class="slot-hint">→ correct: ${escapeHTML(t)}</div>`;
+      }
+
+      if (currentDD.type === 'order') {
+        h += `<div class="order-row">
+          <div class="order-num">${slot.label}</div>
+          <div style="flex:1;">
+            <div class="slot-target has-card ${slotClass}">${inner}</div>
+            ${hint}
+          </div>
+        </div>`;
+      } else {
+        const labelHTML = currentDD.slotIsCode
+          ? `<code>${escapeHTML(slot.label)}</code>`
+          : escapeHTML(slot.label);
+        h += `<div class="match-row">
+          <div class="match-label">${labelHTML}</div>
+          <div style="display:flex; flex-direction:column; min-width:170px;">
+            <div class="slot-target has-card ${slotClass}">${inner}</div>
+            ${hint}
+          </div>
+        </div>`;
+      }
+    });
+    h += '</div>';
+  } else {
+    h += '<div class="cat-zones">';
+    currentDD.slotOrder.forEach(sid => {
+      const slot = currentDD.slots.find(s => s.id === sid);
+      const cardsHere = Object.keys(dragState.placements).filter(cid => dragState.placements[cid] === sid);
+      h += `<div class="cat-zone">
+        <div class="cat-zone-label">${escapeHTML(slot.label)}</div>
+        <div class="cat-zone-cards">`;
+      cardsHere.forEach(cid => {
+        const c = currentDD.cards.find(x => x.id === cid);
+        const ok = results[cid];
+        h += `<button class="dd-card ${ok ? 'correct' : 'wrong'}" disabled>${escapeHTML(c.text)}</button>`;
+      });
+      if (cardsHere.length === 0) {
+        h += `<span class="placeholder">(empty)</span>`;
+      }
+      h += `</div></div>`;
+    });
+    h += '</div>';
+  }
+
+  area.innerHTML = h;
+}
+
+/* ---------- Next button ---------- */
+function showNextButton() {
+  const acts = document.getElementById('acts');
+  acts.style.display = 'flex';
+  const isLast = pos + 1 === order.length;
+  acts.innerHTML = `<button class="btn" id="nextBtn">${isLast ? 'See results →' : 'Next question →'}</button>`;
+  document.getElementById('nextBtn').onclick = () => { pos++; renderQuestion(); };
+}
+
+/* ---------- Result ---------- */
+function renderResult() {
+  elProg.style.width = '100%';
+  const total = order.length;
+  const pct = Math.round(score / total * 100);
+
+  const bestRaw = lsGet('lec01_v2_best');
+  const bestNum = bestRaw ? parseInt(bestRaw, 10) : 0;
+  if (score > bestNum) {
+    lsSet('lec01_v2_best', String(score));
+    elBest.textContent = String(score);
+  }
+
+  let badge = '', cls = '';
+  if (pct === 100)    { badge = '🌸 Perfect — content fully absorbed';        cls = 'gold'; }
+  else if (pct >= 90) { badge = '🌿 Excellent — almost everything stuck';      cls = 'gold'; }
+  else if (pct >= 75) { badge = '☕ Solid — review misses, run another round'; cls = 'silver'; }
+  else if (pct >= 50) { badge = '📖 Getting there — try one more pass';        cls = 'bronze'; }
+  else                { badge = '🍵 Warm-up done — replay to lock it in';      cls = 'try'; }
+
+  let reviewHTML;
+  if (wrongLog.length === 0) {
+    reviewHTML = `<div class="review-list" style="border:0;">
+      <h3>No mistakes this round 🌸</h3>
+    </div>`;
+  } else {
+    reviewHTML = `<div class="review-list">
+      <h3>Review — ${wrongLog.length} to revisit</h3>
+      ${wrongLog.map(w => `
+        <div class="review-item">
+          <div class="qq">${escapeHTML(w.q)}</div>
+          <div class="info">${escapeHTML(w.info)}</div>
+        </div>
+      `).join('')}
+    </div>`;
+  }
+
+  elCard.innerHTML = `
+    <div class="result">
+      <h2>Round ${round} complete</h2>
+      <div class="badge ${cls}">${badge}</div>
+      <div class="score-big">${score} / ${total}</div>
+      <div class="score-pct">${pct}% correct</div>
+      ${reviewHTML}
+      <div class="actions" style="justify-content:center;">
+        <button class="btn" id="againBtn">Play another round ↻</button>
+        <button class="btn ghost" id="resetBtn">Reset best score</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('againBtn').onclick = () => { round++; startRound(); };
+  document.getElementById('resetBtn').onclick = () => {
+    lsDel('lec01_v2_best');
+    elBest.textContent = '—';
+    const b = document.getElementById('resetBtn');
+    b.textContent = 'Best score reset ✓';
+    b.disabled = true;
+  };
+}
+
+/* boot */
+startRound();
+</script>
+</body>
+</html>
